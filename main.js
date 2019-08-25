@@ -6,6 +6,39 @@ const path_package  = require('path')
 const electron = require('electron')
 const path = require('path')
 const url = require('url')
+const log = require('electron-log');
+
+
+const { autoUpdater } = require("electron-updater");
+const feedUrl = "http://127.0.0.1:8080/";
+autoUpdater.setFeedURL(feedUrl);
+
+autoUpdater.logger = log;
+autoUpdater.logger.transports.file.level = 'info';
+log.info('App starting...');
+
+autoUpdater.on('checking-for-update', () => {
+    log.info('Checking for update...');
+})
+autoUpdater.on('update-available', (info) => {
+    log.info('Update available.');
+})
+autoUpdater.on('update-not-available', (info) => {
+    log.info('Update not available.');
+})
+autoUpdater.on('error', (err) => {
+    log.info('Error in auto-updater. ' + err);
+})
+autoUpdater.on('download-progress', (progressObj) => {
+    let log_message = "Download speed: " + progressObj.bytesPerSecond;
+    log_message = log_message + ' - Downloaded ' + progressObj.percent + '%';
+    log_message = log_message + ' (' + progressObj.transferred + "/" + progressObj.total + ')';
+    log.info(log_message);
+})
+autoUpdater.on('update-downloaded', (info) => {
+    log.info('Update downloaded');
+});
+
 
 let win
 
@@ -192,12 +225,22 @@ function createWindow() {
     }, {
         label: "About",
         submenu: [{
-            label: "AutoDesk SVF Viewer by LiNan"
+            label: "Version",
+            click: () => {
+                log.info("version: " + electron.app.getVersion());
+            }
         }, {
             label: "Home",
             click: () => {
-                electron.shell.openExternal("https://github.com/saluzi/linan");
+                electron.shell.openExternal("https://github.com/saluzi/cad_viewer");
             }
+        },{
+            label: "Update",
+            click: () => {
+                log.info("update...");
+                autoUpdater.checkForUpdatesAndNotify();
+            }
+
         }]
     }]));
     //handle command line args

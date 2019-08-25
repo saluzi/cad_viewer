@@ -9,6 +9,12 @@
       "allowToChangeInstallationDirectory": true
     },
     "appId": "cadviewer",
+    "publish": [
+      {
+        "provider": "generic",
+        "url": "http://127.0.0.1:8080/"
+      }
+    ],
     "mac": {
       "target": [
         "dmg",
@@ -24,6 +30,7 @@
   },
   "scripts": {
     "start": "electron .",
+    "start-update-server": "http-server wwwroot/ -p 8080",
     "dist": "electron-builder --win --x64",
     "packageWin": "electron-packager . svfviewer --platform=win32 --arch=x64 --icon=./build/icon.ico --out=./dist --electron-version=6.0.1 --app-version=1.0.0 --overwrite",
     "packageDarwin": "electron-packager . svfviewer --platform=darwin --arch=x64 --icon=./build/icon.icns --out=./dist --electron-version=6.0.1 --app-version=1.0.0 --overwrite",
@@ -36,10 +43,10 @@
     "electron": "^6.0.4",
     "electron-builder": "^21.2.0",
     "electron-packager": "^14.0.4",
-    "electron-updater": "^4.1.2",
     "http-server": "^0.11.1"
   },
   "dependencies": {
+    "electron-updater": "^4.1.2",
     "adm-zip": "^0.4.13",
     "electron-log": "^3.0.7"
   }
