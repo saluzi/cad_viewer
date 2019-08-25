@@ -4,6 +4,9 @@
   "description": "CAD Viewer",
   "main": "main.js",
   "build": {
+    "asar":true,
+    "asarUnpack":["tools","svf_demo"],
+    "files":["!**/wwwroot"],
     "nsis": {
       "oneClick": false,
       "allowToChangeInstallationDirectory": true
@@ -13,6 +16,11 @@
       {
         "provider": "generic",
         "url": "http://127.0.0.1:8080/"
+      },
+      {
+        "provider": "github",
+        "owner": "saluzi",
+        "repo": "electron-updater-example"
       }
     ],
     "mac": {
@@ -32,6 +40,7 @@
     "start": "electron .",
     "start-update-server": "http-server wwwroot/ -p 8080",
     "dist": "electron-builder --win --x64",
+    "pack": "electron-builder --dir",
     "packageWin": "electron-packager . svfviewer --platform=win32 --arch=x64 --icon=./build/icon.ico --out=./dist --electron-version=6.0.1 --app-version=1.0.0 --overwrite",
     "packageDarwin": "electron-packager . svfviewer --platform=darwin --arch=x64 --icon=./build/icon.icns --out=./dist --electron-version=6.0.1 --app-version=1.0.0 --overwrite",
     "packageLinux": "electron-packager . svfviewer --platform=linux --arch=x64 --icon=./build/icon.ico --out=./dist --electron-version=6.0.1 --app-version=1.0.0 --overwrite",

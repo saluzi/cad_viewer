@@ -32,6 +32,59 @@ npm run packageDarwin
 npm run dist
 ```
 ---
+## 关于程序打包和自动更新的说明
+打包和自动更新主要参考文档如下
+* [electron-builder参考](https://www.electron.build/configuration/configuration)
+* [教程](https://electronjs.org/docs/tutorial/application-packaging)
+* [demo程序](https://github.com/iffy/electron-updater-example)
+
+
+
+1. 程序打包是否采用`asar`打包的设置，其中`asarUnpack`打包过程中不打到包里的文件或文件夹
+```
+"build": {
+    "asar":true,
+    "asarUnpack":["tools","svf_demo"],
+    ...
+}
+```
+
+2. 程序打包例外文件夹设置，采用`files`设置，[参考文档](https://www.electron.build/configuration/contents#files)
+```
+"build": {
+    ...
+    "files":["!**/wwwroot"],
+    ...
+}
+```
+
+3. 程序自动更新部署设置，可采用`github`等也可采用自己的更新服务器，更新服务器采用任意文件服务器均可  
+下面是`package.json`中的设置,分别是自己建设的更新服务器或是github服务器，用户选定一个后将其余的删掉即可
+```
+"publish": [
+      {
+        "provider": "generic",
+        "url": "http://127.0.0.1:8080/"
+      },
+      {
+        "provider": "github",
+        "owner": "saluzi",
+        "repo": "electron-updater-example"
+      }
+    ]
+```
+注意，当选定了github作为更新服务后用户不需要在main.js中指定更新服务器地址，打包程序会自己适配，但如果使用自己的更新服务器，用户需要在程序中指定服务器地址：
+```
+const feedUrl = "http://127.0.0.1:8080/";
+autoUpdater.setFeedURL(feedUrl);
+```
+需要上传服务器的文件包括三个，形如：
+* cadviewer-Setup-1.0.0.exe
+* cadviewer-Setup-1.0.0.exe.blockmap
+* latest.yml
+注意，需要检查` latest.yml`中的文件名和`exe`及`blockmap`文件是否一致，如果不一致，将文件名改成一致（不能改` latest.yml`中的内容，要改文件名）
+
+---
 ## 项目资料及笔记
 1. 项目主要使用了AutoDesk Viewer，其相关的js文件及其资源下载路径如下
 ```

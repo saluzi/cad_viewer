@@ -1,4 +1,5 @@
 const fs = require('fs')
+const exec = require('child_process');
 const adm_zip = require('adm-zip')
 // 目前unzip库似乎与其他库有冲突，所以使用adm_zip库
 // const unzip = require('unzip')
@@ -10,8 +11,9 @@ const log = require('electron-log');
 
 
 const { autoUpdater } = require("electron-updater");
-const feedUrl = "http://127.0.0.1:8080/";
-autoUpdater.setFeedURL(feedUrl);
+// 如果使用github作为更新服务器，则将下面两行注释掉
+// const feedUrl = "http://127.0.0.1:8080/";
+// autoUpdater.setFeedURL(feedUrl);
 
 autoUpdater.logger = log;
 autoUpdater.logger.transports.file.level = 'info';
@@ -39,6 +41,8 @@ autoUpdater.on('update-downloaded', (info) => {
     log.info('Update downloaded');
 });
 
+const tools_path = "./resources/app.asar.unpacked/tools/";
+// const tools_path = "./tools/";
 
 let win
 
@@ -221,6 +225,21 @@ function createWindow() {
                 let extractDirPath = "./"+extractDir;
                 deleteall(extractDirPath);
             }
+        },{
+            label: "Invoke Mole",
+            click: () => {
+                var cmd_str = "cd " + tools_path + "mole/mcl && mcl_launch.exe";
+                const child = exec.exec(cmd_str, [], (error, stdout, stderr) => {
+                    if (error) {
+                        log.error('stderr', stderr);
+                        // throw error;
+                    }
+                    log.info('stdout',stdout);
+                });
+
+
+            }
+
         }]
     }, {
         label: "About",
